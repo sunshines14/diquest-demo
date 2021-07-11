@@ -9,21 +9,21 @@ model_path = sys.argv[1]
 infile = sys.argv[2]
 outfile = sys.argv[3]
 
-sr = 16000
+sr = 48000
 duration = 10
 num_freq_bin = 128
 num_fft = 2048
 hop_length = int(num_fft / 2)
 num_time_bin = int(np.ceil(duration * sr / hop_length))
 num_channel = 1
-use_delta = False
+use_delta = True
 
 classes = [['indoor'],['outdoor'],['transportation']]
 
 
 def deltas(X_in):
-    X_out = (X_in[:,:,2:,:]-X_in[:,:,:-2,:])/10.0
-    X_out = X_out[:,:,1:-1,:]+(X_in[:,:,4:,:]-X_in[:,:,:-4,:])/5.0
+    X_out = (X_in[:,2:,:]-X_in[:,:-2,:])/10.0
+    X_out = X_out[:,1:-1,:]+(X_in[:,4:,:]-X_in[:,:-4,:])/5.0
     return X_out
 
 
@@ -52,11 +52,11 @@ def feats(wavpath):
                                                         norm=None)
     
     logmel_data = np.log(logmel_data+1e-8)
-    for j in range(len(logmel_data[:,:,0][:,0])):
-        mean = np.mean(logmel_data[:,:,0][j,:])
-        std = np.std(logmel_data[:,:,0][j,:])
-        logmel_data[:,:,0][j,:] = ((logmel_data[:,:,0][j,:]-mean)/std)
-        logmel_data[:,:,0][np.isnan(logmel_data[:,:,0])]=0.
+    #for j in range(len(logmel_data[:,:,0][:,0])):
+    #    mean = np.mean(logmel_data[:,:,0][j,:])
+    #    std = np.std(logmel_data[:,:,0][j,:])
+    #    logmel_data[:,:,0][j,:] = ((logmel_data[:,:,0][j,:]-mean)/std)
+    #    logmel_data[:,:,0][np.isnan(logmel_data[:,:,0])]=0.
     return logmel_data
 
 
@@ -66,7 +66,7 @@ def process(i, threshold, logmel_data, outfile, model):
     if use_delta:
         logmel_data_deltas = deltas(logmel_data)
         logmel_data_deltas_deltas = deltas(logmel_data_deltas)
-        logmel_data = np.concatenate((logmel_data[:,:,4:-4,:], logmel_data_deltas[:,:,2:-2,:], logmel_data_deltas_deltas), axis=-1)
+        logmel_data = np.concatenate((logmel_data[:,4:-4,:], logmel_data_deltas[:,2:-2,:], logmel_data_deltas_deltas), axis=-1)
         
     input_index = model.get_input_details()[0]["index"]
     output_index = model.get_output_details()[0]["index"]

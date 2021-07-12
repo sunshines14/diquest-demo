@@ -2,20 +2,21 @@ import sys
 import soundfile as sound
 import numpy as np
 
+
 NORM = False
 
 def preprob(input_path, output_path):
     y, sr = sound.read(input_path)
-    duration = y.shape[0]/16000
+    duration = y.shape[0]/sr
     
     seconds_division = 50
-    window_length = int(16000/seconds_division)
+    window_length = int(sr/seconds_division)
     y_abs = np.absolute(y)
     y_mean = y_abs.mean()
     
     k = 5
     ratio = 0.3
-    sec = 16000
+    sec = 48000
     win = 10
     cnt = 0
     total_length = int(duration*seconds_division)/k
@@ -33,15 +34,15 @@ def preprob(input_path, output_path):
                 else:
                     zero_window = np.zeros(window.shape)
                     normalized = np.concatenate((normalized, zero_window))
-            print("iteration:",n, "duration:",duration/k, "normalized_duration:",normalized.shape[0]/16000)
+            print("iteration:",n, "duration:",duration/k, "normalized_duration:",normalized.shape[0]/sr)
             for i in range(int(normalized.shape[0]/sec)-3):
                 cnt = cnt+1
-                sound.write(output_path + '{:05}'.format(cnt) + '.wav', normalized[i*sec : (i+win)*sec], 16000)
+                sound.write(output_path + '{:05}'.format(cnt) + '.wav', normalized[i*sec : (i+win)*sec], sr)
             print("number of accumulated files:",cnt)
     else:
         for i in range(int(y.shape[0]/sec)):
             cnt = cnt+1
-            sound.write(output_path + '{:05}'.format(cnt) + '.wav', y[i*sec : (i+win)*sec], 16000)
+            sound.write(output_path + '{:05}'.format(cnt) + '.wav', y[i*sec : (i+win)*sec], sr)
         print("number of accumulated files:",cnt)
     
 if __name__ == "__main__":

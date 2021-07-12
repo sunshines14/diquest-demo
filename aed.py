@@ -1,5 +1,6 @@
 import sys
 import librosa
+import datetime
 import numpy as np
 import tensorflow as tf
 import soundfile as sound
@@ -53,12 +54,16 @@ def feats(wavpath):
                                                         norm=None)
     
     logmel_data = np.log(logmel_data+1e-8)
-    for j in range(len(logmel_data[:,:,0][:,0])):
-        mean = np.mean(logmel_data[:,:,0][j,:])
-        std = np.std(logmel_data[:,:,0][j,:])
-        logmel_data[:,:,0][j,:] = ((logmel_data[:,:,0][j,:]-mean)/std)
-        logmel_data[:,:,0][np.isnan(logmel_data[:,:,0])]=0.
+    #for j in range(len(logmel_data[:,:,0][:,0])):
+    #    mean = np.mean(logmel_data[:,:,0][j,:])
+    #    std = np.std(logmel_data[:,:,0][j,:])
+    #    logmel_data[:,:,0][j,:] = ((logmel_data[:,:,0][j,:]-mean)/std)
+    #    logmel_data[:,:,0][np.isnan(logmel_data[:,:,0])]=0.
     return logmel_data
+
+
+def time(sec):
+    return str(datetime.timedelta(seconds=sec))
 
 
 def process(i, threshold, logmel_data, outfile, model):
@@ -87,14 +92,15 @@ def process(i, threshold, logmel_data, outfile, model):
         unknown_flag = True
         
     if unknown_flag == True:
-        outfile.write(str(round(i*0.1,1)) + ',' + str(0.0) + ',' + 'unknown')
+        outfile.write(str(time(round(i*0.1,1))) + ',' + str(0.0) + ',' + 'unknown')
         outfile.write('\n')
-        print(round(i*0.1,1), 'unknown')
+        #print(round(i*0.1,1), 'unknown')
+        print(time(round(i*0.1,1)), 'unknown')
     else:
-        outfile.write(str(round(i*0.1,1)) + ',' + str(out_softmax[0][int(out_result)]) + ',' + out_classes[int(out_result)][0])
+        outfile.write(str(time(round(i*0.1,1))) + ',' + str(out_softmax[0][int(out_result)]) + ',' + out_classes[int(out_result)][0])
         outfile.write('\n')
-        #print(round(i*0.1,1), out_softmax[0], out_softmax[0][int(out_result)], out_classes[int(out_result)][0])
-        print(round(i*0.1,1), out_softmax[0][int(out_result)], out_classes[int(out_result)][0])
+        #print(round(i*0.1,1), out_softmax[0][int(out_result)], out_classes[int(out_result)][0])
+        print(time(round(i*0.1,1)), out_softmax[0][int(out_result)], out_classes[int(out_result)][0])
 
 
 if __name__ == "__main__":
@@ -113,3 +119,4 @@ if __name__ == "__main__":
                 i = int(wavpath.split('/')[-1].replace('.wav',''))
                 threshold = 0.5
                 process(i, threshold, logmel_data, outfile, model)
+                

@@ -1,5 +1,6 @@
 import sys
 import librosa
+import datetime
 import numpy as np
 import tensorflow as tf
 import soundfile as sound
@@ -60,6 +61,10 @@ def feats(wavpath):
     return logmel_data
 
 
+def time(sec):
+    return str(datetime.timedelta(seconds=sec))
+
+
 def process(i, threshold, logmel_data, outfile, model):
     unknown_flag = False
     
@@ -86,13 +91,13 @@ def process(i, threshold, logmel_data, outfile, model):
         unknown_flag = True
         
     if unknown_flag == True:
-        outfile.write(str(round(i*1.0,1)) + ',' + str(0.0) + ',' + 'unknown')
+        outfile.write(str(time(round(i*1.0,1))) + ',' + str(0.0) + ',' + 'unknown')
         outfile.write('\n')
-        print(round(i*1.0,1), 'unknown')
+        print(time(round(i*1.0,1)), 'unknown')
     else:
-        outfile.write(str(round(i*1.0,1)) + ',' + str(out_softmax[0][int(out_result)]) + ',' + out_classes[int(out_result)][0])
+        outfile.write(str(time(round(i*1.0,1))) + ',' + str(out_softmax[0][int(out_result)]) + ',' + out_classes[int(out_result)][0])
         outfile.write('\n')
-        print(round(i*1.0,1), out_softmax[0][int(out_result)], out_classes[int(out_result)][0])
+        print(time(round(i*1.0,1)), out_softmax[0][int(out_result)], out_classes[int(out_result)][0])
 
 
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ num_fft = 321
 hop_length = int(num_fft / 2)
 num_time_bin = int(np.ceil(duration * sr / hop_length))
 num_channel = 1
+use_norm = False
 use_delta = False
 
 classes = [['baby'],['bicycle'],['boiling'],['car'],['carpassing'],
@@ -54,11 +55,12 @@ def feats(wavpath):
                                                         norm=None)
     
     logmel_data = np.log(logmel_data+1e-8)
-    #for j in range(len(logmel_data[:,:,0][:,0])):
-    #    mean = np.mean(logmel_data[:,:,0][j,:])
-    #    std = np.std(logmel_data[:,:,0][j,:])
-    #    logmel_data[:,:,0][j,:] = ((logmel_data[:,:,0][j,:]-mean)/std)
-    #    logmel_data[:,:,0][np.isnan(logmel_data[:,:,0])]=0.
+    if use_norm:
+        for j in range(len(logmel_data[:,:,0][:,0])):
+            mean = np.mean(logmel_data[:,:,0][j,:])
+            std = np.std(logmel_data[:,:,0][j,:])
+            logmel_data[:,:,0][j,:] = ((logmel_data[:,:,0][j,:]-mean)/std)
+            logmel_data[:,:,0][np.isnan(logmel_data[:,:,0])]=0.
     return logmel_data
 
 

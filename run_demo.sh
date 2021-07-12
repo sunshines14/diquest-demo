@@ -4,7 +4,7 @@ stage=0
 basedir=/home/soonshin/sss/workplace/diquest
 inputfile=$basedir/input/input285.mp4
 modelfile11=$basedir/model/11model-035-0.6208-0.8758.tflite
-modelfile3=$basedir/model/3model-074-0.3969-0.9269.tflite
+modelfile3=$basedir/model/3model-115-0.3668-0.9350.tflite
 
 
 if [ $stage -le 0 ]; then

@@ -4,7 +4,7 @@ stage=$1
 basedir=/home/hosung/diquest-demo
 filename=$2
 #threemodelname="smallfcnn-model-0.9618-quantized.tflite"
-threemodelname="3model-074-0.3969-0.9269.tflite"
+threemodelname="3model-183-0.3535-0.9388.tflite"
 aedmodelname="11model-035-0.6208-0.8758.tflite"
 
 if [ $stage -eq 0 ]; then

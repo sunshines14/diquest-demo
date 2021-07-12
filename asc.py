@@ -29,6 +29,7 @@ def deltas(X_in):
 
 def feats(wavpath):
     y, sr = sound.read(wavpath)
+    #print(sr)
     logmel_data = np.zeros((num_freq_bin, num_time_bin, num_channel), 'float32')
     
     max_len = int(duration*sr)

@@ -56,11 +56,7 @@ def feats(wavpath):
     
     logmel_data = np.log(logmel_data+1e-8)
     if use_norm:
-        for j in range(len(logmel_data[:,:,0][:,0])):
-            mean = np.mean(logmel_data[:,:,0][j,:])
-            std = np.std(logmel_data[:,:,0][j,:])
-            logmel_data[:,:,0][j,:] = ((logmel_data[:,:,0][j,:]-mean)/std)
-            logmel_data[:,:,0][np.isnan(logmel_data[:,:,0])]=0.
+        logmel_data = (logmel_data - np.min(logmel_data)) / (np.max(logmel_data) - np.min(logmel_data))
     return logmel_data
 
 
@@ -96,12 +92,10 @@ def process(i, threshold, logmel_data, outfile, model):
     if unknown_flag == True:
         outfile.write(str(time(round(i*0.1,1))) + ',' + str(0.0) + ',' + 'unknown')
         outfile.write('\n')
-        #print(round(i*0.1,1), 'unknown')
         print(time(round(i*0.1,1)), 'unknown')
     else:
         outfile.write(str(time(round(i*0.1,1))) + ',' + str(out_softmax[0][int(out_result)]) + ',' + out_classes[int(out_result)][0])
         outfile.write('\n')
-        #print(round(i*0.1,1), out_softmax[0][int(out_result)], out_classes[int(out_result)][0])
         print(time(round(i*0.1,1)), out_softmax[0][int(out_result)], out_classes[int(out_result)][0])
 
 

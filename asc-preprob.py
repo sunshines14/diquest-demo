@@ -3,7 +3,7 @@ import soundfile as sound
 import numpy as np
 
 
-NORM = False
+NORM = True
 
 def preprob(input_path, output_path):
     y, sr = sound.read(input_path)

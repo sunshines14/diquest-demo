@@ -55,11 +55,7 @@ def feats(wavpath):
     
     logmel_data = np.log(logmel_data+1e-8)
     if use_norm:
-        for j in range(len(logmel_data[:,:,0][:,0])):
-            mean = np.mean(logmel_data[:,:,0][j,:])
-            std = np.std(logmel_data[:,:,0][j,:])
-            logmel_data[:,:,0][j,:] = ((logmel_data[:,:,0][j,:]-mean)/std)
-            logmel_data[:,:,0][np.isnan(logmel_data[:,:,0])]=0.
+        logmel_data = (logmel_data - np.min(logmel_data)) / (np.max(logmel_data) - np.min(logmel_data))
     return logmel_data
 
 
